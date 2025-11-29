@@ -306,10 +306,16 @@
 
         .system-message {
             text-align: center;
-            color: rgba(255, 255, 255, 0.8);
+            color: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 10px 20px;
+            border-radius: 20px;
             font-size: 14px;
             font-style: italic;
-            margin: 10px 0;
+            margin: 15px auto;
+            max-width: 80%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .input-area {
@@ -394,16 +400,200 @@
         }
 
         @media (max-width: 768px) {
-            .gender-options {
-                flex-direction: column;
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                border-radius: 20px;
+                max-height: 100vh;
+            }
+
+            .header {
+                padding: 20px 15px;
             }
 
             .header h1 {
                 font-size: 24px;
+                margin-bottom: 10px;
+            }
+
+            .online-count {
+                font-size: 12px;
+                padding: 8px 16px;
+            }
+
+            .setup-screen, .chat-screen {
+                padding: 20px;
+            }
+
+            .form-group {
+                margin-bottom: 20px;
+            }
+
+            label {
+                font-size: 14px;
+                margin-bottom: 10px;
+            }
+
+            .gender-options {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .gender-btn {
+                padding: 15px;
+                font-size: 15px;
+            }
+
+            .username-display {
+                font-size: 20px;
+                padding: 15px;
+            }
+
+            .btn {
+                padding: 15px;
+                font-size: 16px;
             }
 
             .chat-container {
-                height: 400px;
+                height: calc(100vh - 400px);
+                min-height: 300px;
+            }
+
+            .chat-info {
+                padding: 12px;
+                font-size: 14px;
+            }
+
+            .messages {
+                padding: 15px;
+            }
+
+            .message {
+                max-width: 85%;
+                padding: 12px 15px;
+                font-size: 14px;
+            }
+
+            .message-sender {
+                font-size: 11px;
+            }
+
+            .message-text {
+                font-size: 14px;
+            }
+
+            .input-area {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            #messageInput {
+                padding: 12px 16px;
+                font-size: 14px;
+            }
+
+            .btn-send {
+                width: 100%;
+                padding: 12px;
+            }
+
+            .status {
+                padding: 10px;
+                font-size: 13px;
+            }
+
+            .typing-indicator {
+                font-size: 12px;
+                padding: 8px 15px;
+            }
+
+            .system-message {
+                font-size: 12px;
+                padding: 8px 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 20px;
+            }
+
+            .online-count {
+                font-size: 11px;
+                padding: 6px 12px;
+            }
+
+            .setup-screen, .chat-screen {
+                padding: 15px;
+            }
+
+            .username-display {
+                font-size: 18px;
+                padding: 12px;
+            }
+
+            .chat-container {
+                height: calc(100vh - 380px);
+                min-height: 250px;
+            }
+
+            .messages {
+                padding: 10px;
+            }
+
+            .message {
+                max-width: 90%;
+                padding: 10px 12px;
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .container {
+                max-width: 750px;
+            }
+
+            .chat-container {
+                height: 450px;
+            }
+        }
+
+        @media (min-width: 1025px) {
+            .container {
+                max-width: 900px;
+            }
+
+            .chat-container {
+                height: 500px;
+            }
+        }
+
+        @media (max-height: 700px) {
+            .chat-container {
+                height: 300px !important;
+            }
+
+            .setup-screen, .chat-screen {
+                padding: 20px;
+            }
+
+            .header {
+                padding: 20px;
+            }
+        }
+
+        @media (max-height: 600px) and (max-width: 768px) {
+            .chat-container {
+                height: 250px !important;
+            }
+
+            .header h1 {
+                font-size: 18px;
+            }
+
+            .messages {
+                padding: 10px;
             }
         }
     </style>
