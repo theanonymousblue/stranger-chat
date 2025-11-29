@@ -9,48 +9,55 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-attachment: fixed;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
             position: relative;
-            overflow: hidden;
+            overflow-x: hidden;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         body::before {
             content: '';
-            position: absolute;
+            position: fixed;
             width: 500px;
             height: 500px;
             background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
             border-radius: 50%;
             top: -250px;
             right: -250px;
-            animation: float 20s infinite ease-in-out;
+            pointer-events: none;
+            will-change: transform;
         }
 
         body::after {
             content: '';
-            position: absolute;
+            position: fixed;
             width: 400px;
             height: 400px;
             background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
             border-radius: 50%;
             bottom: -200px;
             left: -200px;
-            animation: float 15s infinite ease-in-out reverse;
+            pointer-events: none;
+            will-change: transform;
         }
 
-        @keyframes float {
-            0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            33% { transform: translate(30px, -50px) rotate(120deg); }
-            66% { transform: translate(-20px, 20px) rotate(240deg); }
+        @media (max-width: 768px) {
+            body::before,
+            body::after {
+                display: none;
+            }
         }
 
         .container {
@@ -62,9 +69,21 @@
             box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
             max-width: 900px;
             width: 100%;
+            max-height: 95vh;
             overflow: hidden;
             position: relative;
             z-index: 1;
+            display: flex;
+            flex-direction: column;
+            transform: translateZ(0);
+            -webkit-transform: translateZ(0);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                backdrop-filter: blur(15px);
+                -webkit-backdrop-filter: blur(15px);
+            }
         }
 
         .header {
@@ -74,6 +93,7 @@
             padding: 30px;
             color: white;
             text-align: center;
+            flex-shrink: 0;
         }
 
         .header h1 {
@@ -99,6 +119,33 @@
         .setup-screen, .chat-screen {
             padding: 40px;
             background: rgba(255, 255, 255, 0.05);
+            overflow-y: auto;
+            overflow-x: hidden;
+            flex: 1;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior: contain;
+        }
+
+        .setup-screen::-webkit-scrollbar,
+        .chat-screen::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .setup-screen::-webkit-scrollbar-track,
+        .chat-screen::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .setup-screen::-webkit-scrollbar-thumb,
+        .chat-screen::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+        }
+
+        .setup-screen::-webkit-scrollbar-thumb:hover,
+        .chat-screen::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
         }
 
         .setup-screen {
@@ -136,17 +183,28 @@
             backdrop-filter: blur(10px);
             border-radius: 15px;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.2s ease;
             font-size: 16px;
             color: white;
             font-weight: 600;
+            transform: translateZ(0);
+            -webkit-transform: translateZ(0);
+        }
+
+        .gender-btn:active {
+            transform: scale(0.98);
         }
 
         .gender-btn:hover {
             background: rgba(255, 255, 255, 0.2);
             border-color: rgba(255, 255, 255, 0.5);
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        @media (hover: hover) {
+            .gender-btn:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            }
         }
 
         .gender-btn.selected {
@@ -180,15 +238,23 @@
             color: white;
             font-size: 18px;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.2s ease;
             font-weight: 700;
             text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            transform: translateZ(0);
+            -webkit-transform: translateZ(0);
         }
 
-        .btn:hover {
-            background: rgba(255, 255, 255, 0.35);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        @media (hover: hover) {
+            .btn:hover {
+                background: rgba(255, 255, 255, 0.35);
+                transform: translateY(-2px);
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            }
         }
 
         .btn:disabled {
@@ -228,12 +294,15 @@
         .messages {
             flex: 1;
             overflow-y: auto;
+            overflow-x: hidden;
             padding: 20px;
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(5px);
             border-radius: 15px;
             margin-bottom: 15px;
             border: 1px solid rgba(255, 255, 255, 0.1);
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior: contain;
         }
 
         .messages::-webkit-scrollbar {
@@ -260,13 +329,16 @@
             border-radius: 18px;
             max-width: 70%;
             word-wrap: break-word;
-            animation: slideIn 0.3s ease;
+            animation: slideIn 0.2s ease;
+            transform: translateZ(0);
+            -webkit-transform: translateZ(0);
+            will-change: transform, opacity;
         }
 
         @keyframes slideIn {
             from {
                 opacity: 0;
-                transform: translateY(10px);
+                transform: translateY(5px);
             }
             to {
                 opacity: 1;
@@ -332,7 +404,9 @@
             border-radius: 15px;
             font-size: 15px;
             color: white;
-            transition: all 0.3s;
+            transition: all 0.2s ease;
+            transform: translateZ(0);
+            -webkit-transform: translateZ(0);
         }
 
         #messageInput::placeholder {
@@ -343,7 +417,12 @@
             outline: none;
             border-color: rgba(255, 255, 255, 0.5);
             background: rgba(255, 255, 255, 0.2);
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        @media (hover: hover) {
+            #messageInput:focus {
+                box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            }
         }
 
         .btn-send {
@@ -402,11 +481,14 @@
         @media (max-width: 768px) {
             body {
                 padding: 10px;
+                align-items: flex-start;
+                padding-top: 20px;
             }
 
             .container {
                 border-radius: 20px;
-                max-height: 100vh;
+                max-height: calc(100vh - 20px);
+                margin: 0 auto;
             }
 
             .header {
@@ -457,7 +539,8 @@
             }
 
             .chat-container {
-                height: calc(100vh - 400px);
+                height: auto;
+                max-height: calc(100vh - 350px);
                 min-height: 300px;
             }
 
@@ -468,6 +551,8 @@
 
             .messages {
                 padding: 15px;
+                max-height: calc(100vh - 500px);
+                min-height: 200px;
             }
 
             .message {
@@ -516,6 +601,15 @@
         }
 
         @media (max-width: 480px) {
+            body {
+                padding: 5px;
+                padding-top: 10px;
+            }
+
+            .container {
+                max-height: calc(100vh - 10px);
+            }
+
             .header h1 {
                 font-size: 20px;
             }
@@ -535,12 +629,14 @@
             }
 
             .chat-container {
-                height: calc(100vh - 380px);
+                max-height: calc(100vh - 330px);
                 min-height: 250px;
             }
 
             .messages {
                 padding: 10px;
+                max-height: calc(100vh - 480px);
+                min-height: 180px;
             }
 
             .message {
@@ -552,6 +648,7 @@
         @media (min-width: 769px) and (max-width: 1024px) {
             .container {
                 max-width: 750px;
+                max-height: 90vh;
             }
 
             .chat-container {
@@ -562,6 +659,7 @@
         @media (min-width: 1025px) {
             .container {
                 max-width: 900px;
+                max-height: 95vh;
             }
 
             .chat-container {
@@ -572,6 +670,11 @@
         @media (max-height: 700px) {
             .chat-container {
                 height: 300px !important;
+                max-height: 300px !important;
+            }
+
+            .messages {
+                max-height: 200px !important;
             }
 
             .setup-screen, .chat-screen {
@@ -586,6 +689,11 @@
         @media (max-height: 600px) and (max-width: 768px) {
             .chat-container {
                 height: 250px !important;
+                max-height: 250px !important;
+            }
+
+            .messages {
+                max-height: 180px !important;
             }
 
             .header h1 {
@@ -594,6 +702,39 @@
 
             .messages {
                 padding: 10px;
+            }
+        }
+
+        @media (orientation: landscape) and (max-height: 500px) {
+            body {
+                padding: 5px;
+            }
+
+            .container {
+                max-height: calc(100vh - 10px);
+            }
+
+            .header {
+                padding: 15px;
+            }
+
+            .header h1 {
+                font-size: 18px;
+                margin-bottom: 5px;
+            }
+
+            .setup-screen, .chat-screen {
+                padding: 15px;
+            }
+
+            .chat-container {
+                max-height: calc(100vh - 250px);
+                min-height: 200px;
+            }
+
+            .messages {
+                max-height: calc(100vh - 400px);
+                min-height: 150px;
             }
         }
     </style>
@@ -760,14 +901,22 @@
                     currentUser.partnerId = userData.partnerId;
                     currentUser.roomId = userData.roomId;
                     
-                    document.getElementById('status').textContent = '✅ Connected to a stranger!';
-                    document.getElementById('status').classList.add('connected');
-                    document.getElementById('messageInput').disabled = false;
-                    document.getElementById('sendBtn').disabled = false;
-                    
-                    listenToMessages(userData.roomId);
-                    listenToTyping(userData.roomId);
-                    listenToPartnerDisconnect(userData.partnerId);
+                    // Get partner's gender
+                    database.ref('users/' + userData.partnerId).once('value', (partnerSnapshot) => {
+                        const partnerData = partnerSnapshot.val();
+                        const partnerGender = partnerData ? partnerData.gender : 'unknown';
+                        const genderEmoji = partnerGender === 'male' ? '👨' : partnerGender === 'female' ? '👩' : '🌟';
+                        const genderText = partnerGender.charAt(0).toUpperCase() + partnerGender.slice(1);
+                        
+                        document.getElementById('status').textContent = `✅ Connected to a ${genderText} stranger! ${genderEmoji}`;
+                        document.getElementById('status').classList.add('connected');
+                        document.getElementById('messageInput').disabled = false;
+                        document.getElementById('sendBtn').disabled = false;
+                        
+                        listenToMessages(userData.roomId);
+                        listenToTyping(userData.roomId);
+                        listenToPartnerDisconnect(userData.partnerId);
+                    });
                 }
             });
             
