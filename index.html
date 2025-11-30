@@ -5,52 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blind Date</title>
     <style>
-        /* Telegram UI & Dark Mode CSS Variables */
-        :root {
-            /* Light Mode Defaults (Telegram inspired) */
-            --bg-body: #f4f6f9;
-            --bg-container: #ffffff;
-            --bg-chat-area: #f0f0f0;
-            --color-text: #1e1e1e;
-            --color-text-secondary: #7a7a7a;
-            --color-link: #007bff;
-            --bg-input: #ffffff;
-            --color-input-border: #dddddd;
-            
-            --bg-message-own: #dcf8c6;
-            --bg-message-other: #ffffff;
-            --bg-button-primary: #55a8f2;
-            --bg-button-secondary: #f0f0f0;
-
-            --color-status-searching: #ffc107;
-            --color-status-connected: #28a745;
-            --color-border-accent: rgba(0, 0, 0, 0.1);
-            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        .dark-mode {
-            /* Dark Mode Overrides (Telegram Dark inspired) */
-            --bg-body: #17212b;
-            --bg-container: #212c37;
-            --bg-chat-area: #1f2937;
-            --color-text: #e0e6ed;
-            --color-text-secondary: #aeb4b9;
-            --color-link: #3399ff;
-            --bg-input: #2b3644;
-            --color-input-border: #3c4a5c;
-            
-            --bg-message-own: #538a39;
-            --bg-message-other: #36454f;
-            --bg-button-primary: #3399ff;
-            --bg-button-secondary: #2b3644;
-            
-            --color-status-searching: #ffc107;
-            --color-status-connected: #4caf50;
-            --color-border-accent: rgba(255, 255, 255, 0.1);
-            --shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-        }
-
-        /* --- Global Styles --- */
         * {
             margin: 0;
             padding: 0;
@@ -59,401 +13,551 @@
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background: var(--bg-body);
-            transition: background 0.3s;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-attachment: fixed;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
+            position: relative;
             overflow-x: hidden;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
-        
-        /* Remove Christmas snow and decoration */
-        body::before, body::after {
-            content: none !important;
+
+        body::before {
+            content: '';
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            top: -250px;
+            right: -250px;
+            pointer-events: none;
+            will-change: transform;
         }
-        
-        /* --- Container --- */
+
+        body::after {
+            content: '';
+            position: fixed;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+            border-radius: 50%;
+            bottom: -200px;
+            left: -200px;
+            pointer-events: none;
+            will-change: transform;
+        }
+
+        @media (max-width: 768px) {
+            body::before,
+            body::after {
+                display: none;
+            }
+        }
+
         .container {
-            background: var(--bg-container);
-            color: var(--color-text);
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-            max-width: 600px; /* Narrower for chat feel */
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            max-width: 900px;
             width: 100%;
             max-height: 95vh;
             overflow: hidden;
+            position: relative;
+            z-index: 1;
             display: flex;
             flex-direction: column;
-            transition: background 0.3s, box-shadow 0.3s;
+            transform: translateZ(0);
+            -webkit-transform: translateZ(0);
         }
 
-        /* --- Header --- */
+        @media (max-width: 768px) {
+            .container {
+                backdrop-filter: blur(15px);
+                -webkit-backdrop-filter: blur(15px);
+            }
+        }
+
         .header {
-            background: var(--bg-button-primary); /* Telegram blue/primary */
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 30px;
             color: white;
-            padding: 20px 25px;
             text-align: center;
             flex-shrink: 0;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
         }
 
         .header h1 {
-            font-size: 24px;
-            font-weight: 600;
+            font-size: 32px;
+            margin-bottom: 15px;
+            font-weight: 700;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            letter-spacing: -0.5px;
             display: flex;
             align-items: center;
-            gap: 10px;
-            flex-grow: 1;
             justify-content: center;
-            margin: 0;
+            gap: 15px;
         }
 
         .header h1 .logo-icon {
-            width: 28px;
-            height: 28px;
-            fill: white;
+            width: 40px;
+            height: 40px;
+            filter: drop-shadow(0 2px 10px rgba(0,0,0,0.2));
         }
 
         .online-count {
             background: rgba(255, 255, 255, 0.2);
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 12px;
-            font-weight: 500;
-        }
-        
-        /* --- Dark Mode Toggle --- */
-        .toggle-container {
-            flex-shrink: 0;
-            margin-left: 15px;
-        }
-
-        .theme-toggle {
-            cursor: pointer;
-            width: 28px;
-            height: 28px;
-            padding: 4px;
-            border-radius: 50%;
-            transition: background 0.2s;
-        }
-
-        .theme-toggle:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-        
-        .theme-toggle svg {
-            fill: white;
-            width: 100%;
-            height: 100%;
-        }
-
-        /* --- Screens & Forms --- */
-        .auth-screen, .setup-screen, .chat-screen, .history-screen {
-            padding: 25px;
-            overflow-y: auto;
-            flex: 1;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: var(--color-text);
-        }
-
-        .input-field {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid var(--color-input-border);
-            background: var(--bg-input);
-            border-radius: 8px;
-            font-size: 15px;
-            color: var(--color-text);
-            transition: border-color 0.2s, background 0.2s;
-        }
-
-        .input-field::placeholder {
-            color: var(--color-text-secondary);
-            opacity: 0.6;
-        }
-
-        .input-field:focus {
-            outline: none;
-            border-color: var(--bg-button-primary);
-            box-shadow: 0 0 0 3px rgba(85, 168, 242, 0.3);
-        }
-
-        .error-message {
-            background: #ffe3e3;
-            border: 1px solid #ff9999;
-            color: #d90000;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 15px;
+            backdrop-filter: blur(10px);
+            padding: 10px 20px;
+            border-radius: 25px;
+            display: inline-block;
             font-size: 14px;
-            display: none;
-        }
-        
-        .dark-mode .error-message {
-            background: #6a1b1b;
-            border: 1px solid #8c0000;
-            color: #ffcccc;
+            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
-        .error-message.show {
+        .setup-screen, .chat-screen {
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            overflow-y: auto;
+            overflow-x: hidden;
+            flex: 1;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior: contain;
+        }
+
+        .auth-screen {
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            overflow-y: auto;
+            overflow-x: hidden;
+            flex: 1;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior: contain;
             display: block;
         }
-        
+
         .auth-tabs {
             display: flex;
-            border-bottom: 1px solid var(--color-input-border);
-            margin-bottom: 25px;
+            gap: 10px;
+            margin-bottom: 30px;
         }
 
         .auth-tab {
             flex: 1;
             padding: 12px;
-            border-bottom: 3px solid transparent;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
             cursor: pointer;
             transition: all 0.2s ease;
             font-size: 16px;
-            font-weight: 500;
+            color: white;
+            font-weight: 600;
             text-align: center;
-            color: var(--color-text-secondary);
         }
 
         .auth-tab.active {
-            border-color: var(--bg-button-primary);
-            color: var(--bg-button-primary);
-            font-weight: 600;
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.6);
         }
 
+        .auth-form {
+            display: none;
+        }
 
-        /* --- Buttons --- */
-        .btn {
+        .auth-form.active {
+            display: block;
+        }
+
+        .input-field {
             width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 8px;
-            background: var(--bg-button-primary);
+            padding: 15px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            font-size: 15px;
+            color: white;
+            margin-bottom: 15px;
+            transition: all 0.2s ease;
+            transform: translateZ(0);
+            -webkit-transform: translateZ(0);
+        }
+
+        .input-field::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .error-message {
+            background: rgba(255, 107, 107, 0.3);
+            border: 1px solid rgba(255, 107, 107, 0.5);
+            color: white;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .setup-screen::-webkit-scrollbar,
+        .chat-screen::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .setup-screen::-webkit-scrollbar-track,
+        .chat-screen::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .setup-screen::-webkit-scrollbar-thumb,
+        .chat-screen::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+        }
+
+        .setup-screen::-webkit-scrollbar-thumb:hover,
+        .chat-screen::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .setup-screen {
+            display: none;
+        }
+
+        .chat-screen {
+            display: none;
+        }
+
+        .form-group {
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 15px;
+            font-weight: 600;
             color: white;
             font-size: 16px;
-            cursor: pointer;
-            transition: background 0.2s, transform 0.1s;
-            font-weight: 600;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .btn svg {
-            fill: white;
-            margin-right: 8px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
         }
 
-        .btn:active {
-            transform: scale(0.99);
-        }
-
-        .btn:hover:not(:disabled) {
-            filter: brightness(1.1);
-        }
-
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        .btn-secondary {
-            background: var(--bg-button-secondary);
-            color: var(--color-text);
-            border: 1px solid var(--color-input-border);
-            font-weight: 500;
-        }
-        
-        .btn-secondary svg {
-            fill: var(--color-text);
-        }
-        
-        .dark-mode .btn-secondary svg {
-             fill: var(--color-text);
-        }
-
-        .btn-secondary:hover:not(:disabled) {
-            background: var(--color-input-border);
-        }
-        
-        .dark-mode .btn-secondary {
-            color: var(--color-text);
-            border: 1px solid var(--color-input-border);
-        }
-
-        /* --- Gender Options --- */
         .gender-options {
             display: flex;
-            gap: 10px;
+            gap: 15px;
             justify-content: center;
         }
 
         .gender-btn {
             flex: 1;
-            padding: 15px;
-            border: 1px solid var(--color-input-border);
-            background: var(--bg-input);
-            border-radius: 8px;
+            padding: 18px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
             cursor: pointer;
             transition: all 0.2s ease;
-            font-size: 14px;
-            color: var(--color-text-secondary);
-            font-weight: 500;
+            font-size: 16px;
+            color: white;
+            font-weight: 600;
+            transform: translateZ(0);
+            -webkit-transform: translateZ(0);
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 10px;
         }
 
-        .gender-btn svg {
-            fill: var(--color-text-secondary);
+        .gender-btn img {
+            width: 24px;
+            height: 24px;
+            filter: brightness(0) invert(1);
+        }
+
+        .gender-btn:active {
+            transform: scale(0.98);
+        }
+
+        .gender-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        @media (hover: hover) {
+            .gender-btn:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            }
         }
 
         .gender-btn.selected {
-            background: var(--bg-button-primary);
-            border-color: var(--bg-button-primary);
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.6);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .username-display {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
             color: white;
-            font-weight: 600;
-        }
-        
-        .gender-btn.selected svg {
-            fill: white;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
         }
 
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 700;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            transform: translateZ(0);
+            -webkit-transform: translateZ(0);
+        }
 
-        /* --- Chat Screen --- */
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        @media (hover: hover) {
+            .btn:hover {
+                background: rgba(255, 255, 255, 0.35);
+                transform: translateY(-2px);
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            }
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.15);
+            margin-top: 10px;
+            font-size: 16px;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 500px;
+        }
+
         .chat-info {
-            background: var(--bg-chat-area);
-            border: 1px solid var(--color-border-accent);
-            padding: 12px;
-            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 15px;
+            border-radius: 15px;
             margin-bottom: 15px;
             text-align: center;
-            font-weight: 500;
-            color: var(--color-text);
-            transition: background 0.3s, border 0.3s;
+            color: white;
+            font-weight: 600;
         }
 
         .partner-info {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            margin-top: 5px;
-            padding-top: 5px;
-            border-top: 1px solid var(--color-border-accent);
+            gap: 10px;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .partner-info svg {
-            fill: var(--color-text-secondary);
-        }
-
-        .chat-container {
-            display: flex;
-            flex-direction: column;
-            height: 400px;
+            width: 18px;
+            height: 18px;
         }
 
         .messages {
             flex: 1;
             overflow-y: auto;
-            padding: 15px;
-            background: var(--bg-chat-area);
-            border-radius: 8px;
-            margin-bottom: 10px;
-            border: 1px solid var(--color-border-accent);
+            overflow-x: hidden;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(5px);
+            border-radius: 15px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            -webkit-overflow-scrolling: touch;
             overscroll-behavior: contain;
         }
 
-        /* Scrollbar styling for Telegram look */
         .messages::-webkit-scrollbar {
-            width: 5px;
+            width: 8px;
         }
-        .messages::-webkit-scrollbar-thumb {
-            background: var(--color-text-secondary);
+
+        .messages::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
         }
-        .messages::-webkit-scrollbar-track {
-            background: transparent;
+
+        .messages::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
         }
 
+        .messages::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
 
         .message {
-            margin-bottom: 8px;
-            padding: 10px 14px;
+            margin-bottom: 15px;
+            padding: 14px 18px;
             border-radius: 18px;
-            max-width: 80%;
+            max-width: 70%;
             word-wrap: break-word;
-            font-size: 15px;
-            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+            animation: slideIn 0.2s ease;
+            transform: translateZ(0);
+            -webkit-transform: translateZ(0);
+            will-change: transform, opacity;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(5px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .message.own {
-            background: var(--bg-message-own);
-            color: var(--color-text);
-            margin-left: auto;
-            border-bottom-right-radius: 4px; /* Corner style like Telegram */
-        }
-        
-        .dark-mode .message.own {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             color: white;
+            margin-left: auto;
+            text-align: right;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
 
         .message.other {
-            background: var(--bg-message-other);
-            color: var(--color-text);
-            margin-right: auto;
-            border-bottom-left-radius: 4px; /* Corner style like Telegram */
-            border: 1px solid var(--color-input-border);
-        }
-
-        .dark-mode .message.other {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
-            border: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
         }
 
         .message-sender {
-            display: none; /* Hide sender name in Telegram style for P2P */
+            font-size: 12px;
+            opacity: 0.8;
+            margin-bottom: 6px;
+            font-weight: 600;
         }
 
         .message-text {
-            line-height: 1.4;
+            font-size: 15px;
+            line-height: 1.5;
         }
 
         .system-message {
             text-align: center;
-            color: var(--color-text-secondary);
-            background: rgba(122, 122, 122, 0.1);
-            padding: 8px 15px;
-            border-radius: 12px;
-            font-size: 12px;
+            color: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 14px;
             font-style: italic;
-            margin: 10px auto;
-            max-width: 60%;
+            margin: 15px auto;
+            max-width: 80%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .input-area {
+            display: flex;
+            gap: 10px;
+        }
+
+        #messageInput {
+            flex: 1;
+            padding: 15px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            font-size: 15px;
+            color: white;
+            transition: all 0.2s ease;
+            transform: translateZ(0);
+            -webkit-transform: translateZ(0);
+        }
+
+        #messageInput::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        #messageInput:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.5);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        @media (hover: hover) {
+            #messageInput:focus {
+                box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            }
+        }
+
+        .btn-send {
+            padding: 15px 35px;
+            width: auto;
+            font-size: 16px;
         }
 
         .status {
             text-align: center;
-            padding: 10px;
-            border-radius: 8px;
+            padding: 12px;
+            background: rgba(255, 235, 167, 0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 235, 167, 0.4);
+            border-radius: 15px;
             margin-bottom: 15px;
             font-weight: 600;
             color: white;
@@ -461,22 +565,29 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
-            background: var(--color-status-searching);
         }
-        
-        .status svg {
-            fill: white;
+
+        .status img {
+            width: 20px;
+            height: 20px;
+            filter: brightness(0) invert(1);
         }
 
         .status.connected {
-            background: var(--color-status-connected);
+            background: rgba(85, 239, 196, 0.3);
+            border-color: rgba(85, 239, 196, 0.4);
         }
 
         .typing-indicator {
-            padding: 5px 15px;
-            color: var(--color-text-secondary);
+            padding: 10px 20px;
+            color: rgba(255, 255, 255, 0.8);
             font-size: 14px;
-            min-height: 25px;
+            font-style: italic;
+            min-height: 30px;
+        }
+
+        .typing-indicator .dots {
+            display: inline-block;
         }
 
         .typing-indicator .dots span {
@@ -484,41 +595,253 @@
             animation-fill-mode: both;
         }
 
+        .typing-indicator .dots span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-indicator .dots span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
         @keyframes blink {
             0%, 80%, 100% { opacity: 0; }
             40% { opacity: 1; }
         }
-        
-        .chat-input-area {
-            display: flex;
-            gap: 10px;
-        }
 
-        #messageInput {
-            flex: 1;
-            padding: 12px 16px;
-            border-radius: 18px; /* Rounded input field */
-            font-size: 15px;
-        }
-        
-        .btn-send {
-            width: auto;
-            padding: 10px 20px;
-            font-size: 15px;
-            border-radius: 18px;
-            margin-bottom: 0;
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
             body {
                 padding: 10px;
                 align-items: flex-start;
+                padding-top: 20px;
             }
 
             .container {
-                border-radius: 0;
-                max-height: 100vh;
+                border-radius: 20px;
+                max-height: calc(100vh - 20px);
+                margin: 0 auto;
+            }
+
+            .header {
+                padding: 20px 15px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+                margin-bottom: 10px;
+            }
+
+            .online-count {
+                font-size: 12px;
+                padding: 8px 16px;
+            }
+
+            .setup-screen, .chat-screen {
+                padding: 20px;
+            }
+
+            .form-group {
+                margin-bottom: 20px;
+            }
+
+            label {
+                font-size: 14px;
+                margin-bottom: 10px;
+            }
+
+            .gender-options {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .gender-btn {
+                padding: 15px;
+                font-size: 15px;
+            }
+
+            .username-display {
+                font-size: 20px;
+                padding: 15px;
+            }
+
+            .btn {
+                padding: 15px;
+                font-size: 16px;
+            }
+
+            .chat-container {
+                height: auto;
+                max-height: calc(100vh - 350px);
+                min-height: 300px;
+            }
+
+            .chat-info {
+                padding: 12px;
+                font-size: 14px;
+            }
+
+            .messages {
+                padding: 15px;
+                max-height: calc(100vh - 500px);
+                min-height: 200px;
+            }
+
+            .message {
+                max-width: 85%;
+                padding: 12px 15px;
+                font-size: 14px;
+            }
+
+            .message-sender {
+                font-size: 11px;
+            }
+
+            .message-text {
+                font-size: 14px;
+            }
+
+            .input-area {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            #messageInput {
+                padding: 12px 16px;
+                font-size: 14px;
+            }
+
+            .btn-send {
+                width: 100%;
+                padding: 12px;
+            }
+
+            .status {
+                padding: 10px;
+                font-size: 13px;
+            }
+
+            .typing-indicator {
+                font-size: 12px;
+                padding: 8px 15px;
+            }
+
+            .system-message {
+                font-size: 12px;
+                padding: 8px 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 5px;
+                padding-top: 10px;
+            }
+
+            .container {
+                max-height: calc(100vh - 10px);
+            }
+
+            .header h1 {
+                font-size: 20px;
+            }
+
+            .online-count {
+                font-size: 11px;
+                padding: 6px 12px;
+            }
+
+            .setup-screen, .chat-screen {
+                padding: 15px;
+            }
+
+            .username-display {
+                font-size: 18px;
+                padding: 12px;
+            }
+
+            .chat-container {
+                max-height: calc(100vh - 330px);
+                min-height: 250px;
+            }
+
+            .messages {
+                padding: 10px;
+                max-height: calc(100vh - 480px);
+                min-height: 180px;
+            }
+
+            .message {
+                max-width: 90%;
+                padding: 10px 12px;
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .container {
+                max-width: 750px;
+                max-height: 90vh;
+            }
+
+            .chat-container {
+                height: 450px;
+            }
+        }
+
+        @media (min-width: 1025px) {
+            .container {
+                max-width: 900px;
+                max-height: 95vh;
+            }
+
+            .chat-container {
+                height: 500px;
+            }
+        }
+
+        @media (max-height: 700px) {
+            .chat-container {
+                height: 300px !important;
+                max-height: 300px !important;
+            }
+
+            .messages {
+                max-height: 200px !important;
+            }
+
+            .setup-screen, .chat-screen {
+                padding: 20px;
+            }
+
+            .header {
+                padding: 20px;
+            }
+        }
+
+        @media (max-height: 600px) and (max-width: 768px) {
+            .chat-container {
+                height: 250px !important;
+                max-height: 250px !important;
+            }
+
+            .messages {
+                max-height: 180px !important;
+            }
+
+            .header h1 {
+                font-size: 18px;
+            }
+
+            .messages {
+                padding: 10px;
+            }
+        }
+
+        @media (orientation: landscape) and (max-height: 500px) {
+            body {
+                padding: 5px;
+            }
+
+            .container {
+                max-height: calc(100vh - 10px);
             }
 
             .header {
@@ -526,37 +849,29 @@
             }
 
             .header h1 {
-                font-size: 20px;
+                font-size: 18px;
+                margin-bottom: 5px;
             }
-            
-            .auth-screen, .setup-screen, .chat-screen, .history-screen {
+
+            .setup-screen, .chat-screen {
                 padding: 15px;
             }
 
             .chat-container {
-                height: 60vh;
+                max-height: calc(100vh - 250px);
+                min-height: 200px;
             }
 
-            .message {
-                max-width: 95%;
+            .messages {
+                max-height: calc(100vh - 400px);
+                min-height: 150px;
             }
         }
     </style>
 </head>
-<body class="light-mode">
+<body>
     <div class="container">
         <div class="header">
-            <!-- Dark Mode Toggle -->
-            <div class="toggle-container">
-                <div class="theme-toggle" onclick="toggleDarkMode()">
-                    <!-- Sun/Moon Icon -->
-                    <svg id="themeIcon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path id="sun" d="M12 7C14.76 7 17 9.24 17 12C17 14.76 14.76 17 12 17C9.24 17 7 14.76 7 12C7 9.24 9.24 7 12 7ZM12 5C8.13 5 5 8.13 5 12C5 15.87 8.13 19 12 19C15.87 19 19 15.87 19 12C19 8.13 15.87 5 12 5ZM12 1L12 3L12 1ZM12 21L12 23L12 21ZM4.22 5.64L5.64 7.05L4.22 5.64ZM18.36 17L19.78 18.41L18.36 17ZM1 12L3 12L1 12ZM21 12L23 12L21 12ZM4.22 18.36L5.64 17L4.22 18.36ZM18.36 5.64L19.78 7.05L18.36 5.64Z" fill="white"/>
-                        <path id="moon" style="display:none;" d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM15.5 17.5C11.53 17.5 8.24 14.45 8.5 10.5C8.61 8.84 9.32 7.29 10.37 6.1C13.25 7.6 15 10.74 15 12C15 14.21 13.5 16.03 11.5 16.89C13.88 17.39 16.14 16.59 17.58 15.02C18.41 16.16 18.8 17.2 18.5 17.5C18.2 17.8 17.7 18 17.5 17.5L15.5 17.5Z" fill="white"/>
-                    </svg>
-                </div>
-            </div>
-            
             <h1>
                 <svg class="logo-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12 21.35L10.55 20.03C5.4 15.36 2 12.27 2 8.5C2 5.41 4.42 3 7.5 3C9.24 3 10.91 3.81 12 5.08C13.09 3.81 14.76 3 16.5 3C19.58 3 22 5.41 22 8.5C22 12.27 18.6 15.36 13.45 20.03L12 21.35Z" fill="white"/>
@@ -564,7 +879,7 @@
                 Blind Date
             </h1>
             <div class="online-count">
-                <span id="onlineCount">0</span> online
+                <span id="onlineCount">0</span> people online
             </div>
         </div>
 
@@ -590,8 +905,8 @@
                 </div>
 
                 <button class="btn" onclick="signIn()">
-                    <svg width="20" height="20" viewBox="0 0 24 24" style="display: inline-block; vertical-align: middle; margin-right: 8px;">
-                        <path d="M11 7L9.6 8.4L12.2 11H2V13H12.2L9.6 15.6L11 17L16 12L11 7ZM20 19H12V21H20C21.1 21 22 20.1 22 19V5C22 3.9 21.1 3 20 3H12V5H20V19Z" fill="currentColor"/>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: inline-block; vertical-align: middle; margin-right: 8px; filter: brightness(0) invert(1);">
+                        <path d="M11 7L9.6 8.4L12.2 11H2V13H12.2L9.6 15.6L11 17L16 12L11 7ZM20 19H12V21H20C21.1 21 22 20.1 22 19V5C22 3.9 21.1 3 20 3H12V5H20V19Z" fill="white"/>
                     </svg>
                     Sign In
                 </button>
@@ -600,30 +915,25 @@
             <!-- Sign Up Form -->
             <div class="auth-form" id="signupForm">
                 <div class="error-message" id="signupError"></div>
-
-                <div class="form-group">
-                    <label>Choose Your Username</label>
-                    <input type="text" class="input-field" id="signupUsername" placeholder="Enter a unique username (min 3 chars)">
-                </div>
                 
                 <div class="form-group">
                     <label>Choose Your Gender:</label>
                     <div class="gender-options">
-                        <button class="gender-btn" data-gender="male" onclick="selectSignupGender('male', event)">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M9 9C10.29 7.71 12.71 7.71 14 9C15.29 10.29 15.29 12.71 14 14C12.71 15.29 10.29 15.29 9 14C7.71 12.71 7.71 10.29 9 9ZM20 2H15V4H17.59L15.5 6.09C14.16 5.25 12.59 4.83 11 5C7.92 5.34 5.34 7.92 5 11C4.58 15.03 7.97 18.42 12 18C15.08 17.66 17.66 15.08 18 12C18.17 10.41 17.75 8.84 16.91 7.5L19 5.41V8H21V2H20Z" fill="currentColor"/>
+                        <button class="gender-btn" data-gender="male" onclick="selectSignupGender('male')">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M9 9C10.29 7.71 12.71 7.71 14 9C15.29 10.29 15.29 12.71 14 14C12.71 15.29 10.29 15.29 9 14C7.71 12.71 7.71 10.29 9 9ZM20 2H15V4H17.59L15.5 6.09C14.16 5.25 12.59 4.83 11 5C7.92 5.34 5.34 7.92 5 11C4.58 15.03 7.97 18.42 12 18C15.08 17.66 17.66 15.08 18 12C18.17 10.41 17.75 8.84 16.91 7.5L19 5.41V8H21V2H20Z" fill="white"/>
                             </svg>
                             Male
                         </button>
-                        <button class="gender-btn" data-gender="female" onclick="selectSignupGender('female', event)">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M12 2C15.09 2 17.67 4.42 17.98 7.5C18.41 11.53 15.03 14.92 11 14.5C8.58 14.25 6.59 12.59 6 10.25C5.19 6.95 7.71 4 11 4H13V2H11H12ZM12 6C9.79 6 8 (7.79 8 10C8 12.21 9.79 14 12 14C14.21 14 16 12.21 16 10C16 7.79 14.21 6 12 6ZM11 16V19H8V21H11V23H13V21H16V19H13V16H11Z" fill="currentColor"/>
+                        <button class="gender-btn" data-gender="female" onclick="selectSignupGender('female')">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2C15.09 2 17.67 4.42 17.98 7.5C18.41 11.53 15.03 14.92 11 14.5C8.58 14.25 6.59 12.59 6 10.25C5.19 6.95 7.71 4 11 4H13V2H11H12ZM12 6C9.79 6 8 7.79 8 10C8 12.21 9.79 14 12 14C14.21 14 16 12.21 16 10C16 7.79 14.21 6 12 6ZM11 16V19H8V21H11V23H13V21H16V19H13V16H11Z" fill="white"/>
                             </svg>
                             Female
                         </button>
-                        <button class="gender-btn" data-gender="other" onclick="selectSignupGender('other', event)">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M12 2L9.19 8.63L2 9.24L7.46 13.97L5.82 21L12 17.27L18.18 21L16.54 13.97L22 9.24L14.81 8.63L12 2Z" fill="currentColor"/>
+                        <button class="gender-btn" data-gender="other" onclick="selectSignupGender('other')">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2L9.19 8.63L2 9.24L7.46 13.97L5.82 21L12 17.27L18.18 21L16.54 13.97L22 9.24L14.81 8.63L12 2Z" fill="white"/>
                             </svg>
                             Other
                         </button>
@@ -631,8 +941,21 @@
                 </div>
 
                 <div class="form-group">
+                    <label>Your Username</label>
+                    <div class="username-display" id="signupUsernameDisplay">
+                        Click Generate
+                    </div>
+                    <button class="btn btn-secondary" onclick="generateSignupUsername()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: inline-block; vertical-align: middle; margin-right: 8px; filter: brightness(0) invert(1);">
+                            <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4C7.58 4 4.01 7.58 4.01 12C4.01 16.42 7.58 20 12 20C15.73 20 18.84 17.45 19.73 14H17.65C16.83 16.33 14.61 18 12 18C8.69 18 6 15.31 6 12C6 8.69 8.69 6 12 6C13.66 6 15.14 6.69 16.22 7.78L13 11H20V4L17.65 6.35Z" fill="white"/>
+                        </svg>
+                        Generate Username
+                    </button>
+                </div>
+
+                <div class="form-group">
                     <label>Password</label>
-                    <input type="password" class="input-field" id="signupPassword" placeholder="Create a password (min 6 chars)">
+                    <input type="password" class="input-field" id="signupPassword" placeholder="Create a password">
                 </div>
 
                 <div class="form-group">
@@ -641,8 +964,8 @@
                 </div>
 
                 <button class="btn" onclick="signUp()">
-                    <svg width="20" height="20" viewBox="0 0 24 24" style="display: inline-block; vertical-align: middle; margin-right: 8px;">
-                        <path d="M15 12C17.21 12 19 10.21 19 8C19 5.79 17.21 4 15 4C12.79 4 11 5.79 11 8C11 10.21 12.79 12 15 12ZM6 10V7H4V10H1V12H4V15H6V12H9V10H6ZM15 14C12.33 14 7 15.34 7 18V20H23V18C23 15.34 17.67 14 15 14Z" fill="currentColor"/>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: inline-block; vertical-align: middle; margin-right: 8px; filter: brightness(0) invert(1);">
+                        <path d="M15 12C17.21 12 19 10.21 19 8C19 5.79 17.21 4 15 4C12.79 4 11 5.79 11 8C11 10.21 12.79 12 15 12ZM6 10V7H4V10H1V12H4V15H6V12H9V10H6ZM15 14C12.33 14 7 15.34 7 18V20H23V18C23 15.34 17.67 14 15 14Z" fill="white"/>
                     </svg>
                     Sign Up
                 </button>
@@ -650,7 +973,7 @@
         </div>
 
         <!-- Setup Screen -->
-        <div class="setup-screen" id="setupScreen" style="display: none;">
+        <div class="setup-screen" id="setupScreen">
             <div class="form-group">
                 <label>Ready for a Blind Date?</label>
                 <div class="chat-info">
@@ -659,57 +982,19 @@
             </div>
 
             <button class="btn" id="startChatBtn" onclick="startChat()">
-                <svg width="20" height="20" viewBox="0 0 24 24" style="display: inline-block; vertical-align: middle; margin-right: 8px;">
-                    <path d="M12 2C17.52 2 22 6.48 22 12C22 17.52 17.52 22 12 22C6.48 22 2 17.52 2 12C2 6.48 6.48 2 12 2ZM7 11.5L10 14.5L17 7.5L15.59 6.09L10 11.67L8.41 10.09L7 11.5Z" fill="currentColor"/>
-                </svg>
                 Start Dating
-            </button>
-            
-            <button class="btn btn-secondary" onclick="viewHistory()">
-                <svg width="20" height="20" viewBox="0 0 24 24" style="display: inline-block; vertical-align: middle; margin-right: 8px;">
-                    <path d="M13 3C8.58 3 4.97 6.06 4.29 10H2.08C2.69 4.8 7.02 1 12 1C17.7 1 22 5.3 22 11C22 16.7 17.7 21 12 21C7.02 21 2.69 17.2 2.08 12H4.29C4.97 15.94 8.58 19 13 19C17.42 19 21 15.42 21 11C21 6.58 17.42 3 13 3ZM13 17V11H7V13H11V17H13Z" fill="currentColor"/>
-                </svg>
-                View Chat History
             </button>
 
             <button class="btn btn-secondary" onclick="logoutFromSetup()">
-                <svg width="20" height="20" viewBox="0 0 24 24" style="display: inline-block; vertical-align: middle; margin-right: 8px;">
-                    <path d="M17 7L15.59 8.41L18.17 11H8V13H18.17L15.59 15.59L17 17L22 12L17 7ZM4 5H12V3H4C2.9 3 2 3.9 2 5V19C2 20.1 2.9 21 4 21H12V19H4V5Z" fill="currentColor"/>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: inline-block; vertical-align: middle; margin-right: 8px; filter: brightness(0) invert(1);">
+                    <path d="M17 7L15.59 8.41L18.17 11H8V13H18.17L15.59 15.59L17 17L22 12L17 7ZM4 5H12V3H4C2.9 3 2 3.9 2 5V19C2 20.1 2.9 21 4 21H12V19H4V5Z" fill="white"/>
                 </svg>
                 Logout
             </button>
         </div>
-        
-        <!-- History Screen -->
-        <div class="chat-screen" id="historyScreen" style="display: none;">
-            <div class="chat-info">
-                Chat History for <strong id="historyUsername"></strong>
-            </div>
-
-            <div class="messages" id="historyList" style="min-height: 200px; height: auto;">
-                <div class="system-message">Loading history...</div>
-            </div>
-            
-            <div id="historyDetails" style="display: none;">
-                <div class="chat-info">
-                    Conversation with <strong id="historyPartnerUsername"></strong>
-                    <span id="historyPartnerGenderIcon"></span>
-                </div>
-                <div class="messages" id="historyMessages" style="height: 400px; min-height: 200px;">
-                </div>
-            </div>
-
-            <button class="btn" onclick="showSetupFromHistory()">
-                <svg width="20" height="20" viewBox="0 0 24 24" style="display: inline-block; vertical-align: middle; margin-right: 8px;">
-                    <path d="M15.41 16.59L10.83 12L15.41 7.41L14 6L8 12L14 18L15.41 16.59Z" fill="currentColor"/>
-                </svg>
-                Back to Home
-            </button>
-        </div>
-
 
         <!-- Chat Screen -->
-        <div class="chat-screen" id="chatScreen" style="display: none;">
+        <div class="chat-screen" id="chatScreen">
             <div class="chat-info">
                 <div>Your Profile: <strong id="currentUsername"></strong></div>
                 <div class="partner-info" id="partnerInfo" style="display: none;">
@@ -720,7 +1005,7 @@
             </div>
 
             <div class="status" id="status">
-                <svg width="20" height="20" viewBox="0 0 24 24">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M15.5 14H14.71L14.43 13.73C15.41 12.59 16 11.11 16 9.5C16 5.91 13.09 3 9.5 3C5.91 3 3 5.91 3 9.5C3 13.09 5.91 16 9.5 16C11.11 16 12.59 15.41 13.73 14.43L14 14.71V15.5L19 20.49L20.49 19L15.5 14ZM9.5 14C7.01 14 5 11.99 5 9.5C5 7.01 7.01 5 9.5 5C11.99 5 14 7.01 14 9.5C14 11.99 11.99 14 9.5 14Z" fill="white"/>
                 </svg>
                 <span>Looking for a date...</span>
@@ -731,11 +1016,10 @@
                 
                 <div class="typing-indicator" id="typingIndicator"></div>
 
-                <div class="chat-input-area">
+                <div class="input-area">
                     <input 
                         type="text" 
                         id="messageInput" 
-                        class="input-field"
                         placeholder="Type your message..."
                         disabled
                     >
@@ -746,14 +1030,14 @@
             </div>
 
             <button class="btn btn-secondary" onclick="nextChat()">
-                <svg width="20" height="20" viewBox="0 0 24 24" style="display: inline-block; vertical-align: middle; margin-right: 8px;">
-                    <path d="M6 18L14.5 12L6 6V18ZM16 6V18H18V6H16Z" fill="currentColor"/>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: inline-block; vertical-align: middle; margin-right: 8px; filter: brightness(0) invert(1);">
+                    <path d="M6 18L14.5 12L6 6V18ZM16 6V18H18V6H16Z" fill="white"/>
                 </svg>
                 Next Date
             </button>
             <button class="btn btn-secondary" onclick="exitChat()">
-                <svg width="20" height="20" viewBox="0 0 24 24" style="display: inline-block; vertical-align: middle; margin-right: 8px;">
-                    <path d="M10.09 15.59L11.5 17L16.5 12L11.5 7L10.09 8.41L12.67 11H3V13H12.67L10.09 15.59ZM19 3H5C3.89 3 2 (3.9 3 5V9H5V5H19V19H5V15H3V19C3 20.1 3.89 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3Z" fill="currentColor"/>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: inline-block; vertical-align: middle; margin-right: 8px; filter: brightness(0) invert(1);">
+                    <path d="M10.09 15.59L11.5 17L16.5 12L11.5 7L10.09 8.41L12.67 11H3V13H12.67L10.09 15.59ZM19 3H5C3.89 3 3 3.9 3 5V9H5V5H19V19H5V15H3V19C3 20.1 3.89 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3Z" fill="white"/>
                 </svg>
                 End Date
             </button>
@@ -766,17 +1050,26 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 
     <script>
-        // Use environment variables if available, otherwise use mock config (required by instruction)
-        const __app_id = typeof __app_id !== 'undefined' ? __app_id : 'blind-date-app';
-        const __firebase_config = typeof __firebase_config !== 'undefined' ? __firebase_config : '{"apiKey": "AIzaSyAHtcuCoWwUkNCkDmqvsF_MBdMZeRHb7kw","authDomain": "stranger-chat-e1de2.firebaseapp.com","databaseURL": "https://stranger-chat-e1de2-default-rtdb.firebaseio.com","projectId": "stranger-chat-e1de2","storageBucket": "stranger-chat-e1de2.firebasestorage.app","messagingSenderId": "136686398730","appId": "1:136686398730:web:4b5ad4e97c2ee9c4c1def3","measurementId": "G-73LJJRZ89T"}';
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAHtcuCoWwUkNCkDmqvsF_MBdMZeRHb7kw",
+            authDomain: "stranger-chat-e1de2.firebaseapp.com",
+            databaseURL: "https://stranger-chat-e1de2-default-rtdb.firebaseio.com",
+            projectId: "stranger-chat-e1de2",
+            storageBucket: "stranger-chat-e1de2.firebasestorage.app",
+            messagingSenderId: "136686398730",
+            appId: "1:136686398730:web:4b5ad4e97c2ee9c4c1def3",
+            measurementId: "G-73LJJRZ89T"
+        };
 
-        const firebaseConfig = JSON.parse(__firebase_config);
-        
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
-        // Changed from const to var to fix initialization error
-        var database = firebase.database(); 
-        var auth = firebase.auth();         
+        const database = firebase.database();
+        const auth = firebase.auth();
+
+        // Username generation
+        const animals = ['Tiger', 'Eagle', 'Dolphin', 'Wolf', 'Fox', 'Bear', 'Lion', 'Shark', 'Hawk', 'Panda'];
+        const birds = ['Sparrow', 'Raven', 'Falcon', 'Owl', 'Swan', 'Robin', 'Crow', 'Dove', 'Heron', 'Finch'];
 
         let currentUser = {
             id: null,
@@ -787,65 +1080,27 @@
         };
 
         let typingTimeout = null;
-        let signupData = { gender: null };
+        let signupData = {
+            username: null,
+            gender: null
+        };
         let isSearching = false;
         let messageListenerAttached = false;
-        
-        // Data path constants
-        const DATA_PATH = `/artifacts/${__app_id}/public/data`;
-        const PROFILES_PATH = `${DATA_PATH}/profiles`;
-        const USERS_PATH = `${DATA_PATH}/users`;
-        const ROOMS_PATH = `${DATA_PATH}/rooms`;
-        const HISTORIES_PATH = `${DATA_PATH}/histories`;
-        
-        // --- THEME LOGIC ---
-        function toggleDarkMode() {
-            const body = document.body;
-            const isDarkMode = body.classList.toggle('dark-mode');
-            
-            // Toggle icons
-            document.getElementById('sun').style.display = isDarkMode ? 'none' : 'block';
-            document.getElementById('moon').style.display = isDarkMode ? 'block' : 'none';
-            
-            // Save preference to localStorage
-            localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
-        }
-
-        function loadThemePreference() {
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme === 'dark') {
-                // Manually apply dark mode if saved
-                document.body.classList.add('dark-mode');
-                document.getElementById('sun').style.display = 'none';
-                document.getElementById('moon').style.display = 'block';
-            } else {
-                // Ensure light mode is default on load
-                document.getElementById('sun').style.display = 'block';
-                document.getElementById('moon').style.display = 'none';
-            }
-        }
-
-        // Load theme immediately on script execution
-        loadThemePreference();
 
         // Check authentication state
         auth.onAuthStateChanged((user) => {
             if (user) {
                 // User is signed in
-                currentUser.id = user.uid;
                 loadUserProfile(user.uid);
             } else {
                 // User is signed out
                 document.getElementById('authScreen').style.display = 'block';
                 document.getElementById('setupScreen').style.display = 'none';
                 document.getElementById('chatScreen').style.display = 'none';
-                document.getElementById('historyScreen').style.display = 'none';
-                currentUser.id = null;
             }
         });
 
-        // --- AUTH & PROFILE FUNCTIONS ---
-
+        // Auth functions
         function switchAuthTab(tab) {
             document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
@@ -859,7 +1114,7 @@
             }
         }
 
-        function selectSignupGender(gender, event) {
+        function selectSignupGender(gender) {
             document.querySelectorAll('#signupForm .gender-btn').forEach(btn => {
                 btn.classList.remove('selected');
             });
@@ -867,17 +1122,22 @@
             signupData.gender = gender;
         }
 
+        function generateSignupUsername() {
+            const animal = animals[Math.floor(Math.random() * animals.length)];
+            const bird = birds[Math.floor(Math.random() * birds.length)];
+            const number = Math.floor(Math.random() * 1000);
+            signupData.username = `${animal}${bird}${number}`;
+            document.getElementById('signupUsernameDisplay').textContent = signupData.username;
+        }
+
         async function signUp() {
-            const signupUsername = document.getElementById('signupUsername').value.trim();
             const password = document.getElementById('signupPassword').value;
             const confirmPassword = document.getElementById('signupConfirmPassword').value;
             const errorEl = document.getElementById('signupError');
 
-            errorEl.classList.remove('show');
-
             // Validation
-            if (!signupUsername || signupUsername.length < 3) {
-                errorEl.textContent = 'Please enter a username (3+ characters)';
+            if (!signupData.username) {
+                errorEl.textContent = 'Please generate a username';
                 errorEl.classList.add('show');
                 return;
             }
@@ -901,33 +1161,23 @@
             }
 
             try {
-                // Firebase Auth uses email for sign-up/in. We use the username as part of the email.
-                const email = `${signupUsername.toLowerCase().replace(/[^a-z0-9]/g, '')}@blinddate.app`;
-
-                // 1. Check if username is already taken in the profiles node
-                const usernameCheck = await database.ref(PROFILES_PATH).orderByChild('username').equalTo(signupUsername).once('value');
-                if (usernameCheck.exists()) {
-                     errorEl.textContent = 'Username is already taken. Please choose another one.';
-                     errorEl.classList.add('show');
-                     return;
-                }
-
-                // 2. Create user with email/password
+                // Create user with email (username@blinddate.app)
+                const email = `${signupData.username}@blinddate.app`;
                 const userCredential = await auth.createUserWithEmailAndPassword(email, password);
                 
-                // 3. Save user profile
-                await database.ref(PROFILES_PATH + '/' + userCredential.user.uid).set({
-                    username: signupUsername,
+                // Save user profile
+                await database.ref('profiles/' + userCredential.user.uid).set({
+                    username: signupData.username,
                     gender: signupData.gender,
                     createdAt: firebase.database.ServerValue.TIMESTAMP
                 });
 
+                errorEl.classList.remove('show');
                 // Auth state change will handle navigation
             } catch (error) {
                 console.error('Sign up error:', error);
                 if (error.code === 'auth/email-already-in-use') {
-                    // This means the constructed email is in use, which usually implies the username is problematic or already exists.
-                    errorEl.textContent = 'This username is too similar to an existing one or already taken.';
+                    errorEl.textContent = 'Username already taken. Please generate a new one.';
                 } else {
                     errorEl.textContent = error.message;
                 }
@@ -940,8 +1190,6 @@
             const password = document.getElementById('signinPassword').value;
             const errorEl = document.getElementById('signinError');
 
-            errorEl.classList.remove('show');
-
             if (!username || !password) {
                 errorEl.textContent = 'Please enter username and password';
                 errorEl.classList.add('show');
@@ -949,8 +1197,9 @@
             }
 
             try {
-                const email = `${username.toLowerCase().replace(/[^a-z0-9]/g, '')}@blinddate.app`;
+                const email = `${username}@blinddate.app`;
                 await auth.signInWithEmailAndPassword(email, password);
+                errorEl.classList.remove('show');
                 // Auth state change will handle navigation
             } catch (error) {
                 console.error('Sign in error:', error);
@@ -964,7 +1213,7 @@
         }
 
         async function loadUserProfile(uid) {
-            const profileSnapshot = await database.ref(PROFILES_PATH + '/' + uid).once('value');
+            const profileSnapshot = await database.ref('profiles/' + uid).once('value');
             const profile = profileSnapshot.val();
             
             if (profile) {
@@ -974,18 +1223,13 @@
                 document.getElementById('authScreen').style.display = 'none';
                 document.getElementById('setupScreen').style.display = 'block';
                 document.getElementById('setupUsername').textContent = currentUser.username;
-                document.getElementById('historyUsername').textContent = currentUser.username;
-            } else {
-                // Profile not found, force log out
-                logout();
             }
         }
 
         function logout() {
             auth.signOut();
-            // Clean up the user from the active queue if they were logged in
             if (currentUser.id) {
-                database.ref(USERS_PATH + '/' + currentUser.id).remove();
+                database.ref('users/' + currentUser.id).remove();
             }
             currentUser = {
                 id: null,
@@ -996,15 +1240,32 @@
             };
         }
 
-        function logoutFromSetup() {
-            // Ensure we disconnect/clean up any active chat before logging out
-            disconnectPartner(false).then(logout);
+        // Gender selection
+        document.querySelectorAll('.gender-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.gender-btn').forEach(b => b.classList.remove('selected'));
+                this.classList.add('selected');
+                currentUser.gender = this.dataset.gender;
+                checkStartButton();
+            });
+        });
+
+        function generateUsername() {
+            const animal = animals[Math.floor(Math.random() * animals.length)];
+            const bird = birds[Math.floor(Math.random() * birds.length)];
+            const number = Math.floor(Math.random() * 1000);
+            currentUser.username = `${animal}${bird}${number}`;
+            document.getElementById('usernameDisplay').textContent = currentUser.username;
+            checkStartButton();
         }
 
-        // --- CHAT INITIATION & MANAGEMENT ---
-        
+        function checkStartButton() {
+            const btn = document.getElementById('startChatBtn');
+            btn.disabled = !(currentUser.username && currentUser.gender);
+        }
+
         function startChat() {
-            if (!currentUser.id) return;
+            currentUser.id = database.ref('users').push().key;
             document.getElementById('setupScreen').style.display = 'none';
             document.getElementById('chatScreen').style.display = 'block';
             document.getElementById('currentUsername').textContent = currentUser.username;
@@ -1014,7 +1275,7 @@
 
         function joinQueue() {
             isSearching = true;
-            const userRef = database.ref(USERS_PATH + '/' + currentUser.id);
+            const userRef = database.ref('users/' + currentUser.id);
             userRef.set({
                 username: currentUser.username,
                 gender: currentUser.gender,
@@ -1022,18 +1283,8 @@
                 timestamp: firebase.database.ServerValue.TIMESTAMP
             });
 
-            // Remove user from queue if connection is lost
             userRef.onDisconnect().remove();
             
-            // UI Update
-            document.getElementById('status').innerHTML = `
-                <svg width="20" height="20" viewBox="0 0 24 24">
-                    <path d="M15.5 14H14.71L14.43 13.73C15.41 12.59 16 11.11 16 9.5C16 5.91 13.09 3 9.5 3C5.91 3 3 5.91 3 9.5C3 13.09 5.91 16 9.5 16C11.11 16 12.59 15.41 13.73 14.43L14 14.71V15.5L19 20.49L20.49 19L15.5 14ZM9.5 14C7.01 14 5 11.99 5 9.5C5 7.01 7.01 5 9.5 5C11.99 5 14 7.01 14 9.5C14 11.99 11.99 14 9.5 14Z" fill="white"/>
-                </svg>
-                <span>Looking for a date...</span>
-            `;
-            document.getElementById('status').classList.remove('connected');
-
             // Listen for when someone connects to us
             userRef.on('value', (snapshot) => {
                 const userData = snapshot.val();
@@ -1043,7 +1294,7 @@
                     currentUser.roomId = userData.roomId;
                     
                     // Get partner's full info
-                    database.ref(USERS_PATH + '/' + userData.partnerId).once('value', (partnerSnapshot) => {
+                    database.ref('users/' + userData.partnerId).once('value', (partnerSnapshot) => {
                         const partnerData = partnerSnapshot.val();
                         const partnerGender = partnerData ? partnerData.gender : 'unknown';
                         const partnerUsername = partnerData ? partnerData.username : 'Stranger';
@@ -1051,14 +1302,15 @@
                         // Display partner info
                         displayPartnerInfo(partnerUsername, partnerGender);
                         
+                        const genderIcon = getGenderIconSVG(partnerGender);
                         const genderText = partnerGender.charAt(0).toUpperCase() + partnerGender.slice(1);
                         
                         document.getElementById('status').innerHTML = `
-                            <svg width="20" height="20" viewBox="0 0 24 24">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M9 16.17L4.83 12L3.41 13.41L9 19L21 7L19.59 5.59L9 16.17Z" fill="white"/>
                             </svg>
                             <span>Connected to ${partnerUsername} (${genderText})</span>
-                            ${getGenderIconSVG(partnerGender)}
+                            ${genderIcon}
                         `;
                         document.getElementById('status').classList.add('connected');
                         document.getElementById('messageInput').disabled = false;
@@ -1075,13 +1327,12 @@
         }
 
         function findPartner() {
-            if (!isSearching || currentUser.partnerId) return;
+            if (!isSearching) return;
             
-            // Look for any user that is currently looking
-            const queueRef = database.ref(USERS_PATH).orderByChild('looking').equalTo(true);
+            const queueRef = database.ref('users').orderByChild('looking').equalTo(true);
             
             queueRef.once('value', (snapshot) => {
-                if (!isSearching || currentUser.partnerId) return;
+                if (!isSearching) return;
                 
                 const users = [];
                 snapshot.forEach((child) => {
@@ -1096,8 +1347,8 @@
                 if (users.length > 0 && isSearching) {
                     const partner = users[0];
                     
-                    // Check if partner is still available and looking
-                    database.ref(USERS_PATH + '/' + partner.id).once('value', (partnerSnapshot) => {
+                    // Check if partner is still available
+                    database.ref('users/' + partner.id).once('value', (partnerSnapshot) => {
                         if (partnerSnapshot.exists() && partnerSnapshot.val().looking && isSearching) {
                             connectToPartner(partner.id);
                         } else if (isSearching) {
@@ -1105,13 +1356,12 @@
                         }
                     });
                 } else if (isSearching) {
-                    // No partners found, try again in 2 seconds
                     setTimeout(findPartner, 2000);
                 }
             });
         }
 
-        async function connectToPartner(partnerId) {
+        function connectToPartner(partnerId) {
             if (!isSearching || currentUser.partnerId) return;
             
             isSearching = false;
@@ -1119,67 +1369,111 @@
             const roomId = [currentUser.id, partnerId].sort().join('_');
             currentUser.roomId = roomId;
             
-            // 1. Update current user
-            await database.ref(USERS_PATH + '/' + currentUser.id).update({ 
+            // Update current user first
+            database.ref('users/' + currentUser.id).update({ 
                 looking: false, 
                 roomId: roomId,
                 partnerId: partnerId
+            }).then(() => {
+                // Then update partner
+                return database.ref('users/' + partnerId).update({ 
+                    looking: false, 
+                    roomId: roomId,
+                    partnerId: currentUser.id
+                });
+            }).then(() => {
+                // Create the room
+                return database.ref('rooms/' + roomId).set({
+                    users: {
+                        [currentUser.id]: currentUser.username,
+                        [partnerId]: 'Stranger'
+                    },
+                    createdAt: firebase.database.ServerValue.TIMESTAMP
+                });
+            }).then(() => {
+                document.getElementById('status').textContent = '✅ Connected to a stranger!';
+                document.getElementById('status').classList.add('connected');
+                document.getElementById('messageInput').disabled = false;
+                document.getElementById('sendBtn').disabled = false;
+                
+                listenToMessages(roomId);
+                listenToTyping(roomId);
+                listenToPartnerDisconnect(partnerId);
+            }).catch((error) => {
+                console.error('Connection error:', error);
+                isSearching = true;
+                currentUser.partnerId = null;
+                currentUser.roomId = null;
+                setTimeout(findPartner, 1000);
             });
+        }
 
-            // 2. Update partner
-            await database.ref(USERS_PATH + '/' + partnerId).update({ 
-                looking: false, 
-                roomId: roomId,
-                partnerId: currentUser.id
+        function listenToPartnerDisconnect(partnerId) {
+            database.ref('users/' + partnerId).on('value', (snapshot) => {
+                if (!snapshot.exists() && currentUser.partnerId) {
+                    // Partner disconnected
+                    document.getElementById('messages').innerHTML += 
+                        '<div class="system-message">💔 Your date has left the chat.</div>';
+                    document.getElementById('messageInput').disabled = true;
+                    document.getElementById('sendBtn').disabled = true;
+                    document.getElementById('partnerInfo').style.display = 'none';
+                    document.getElementById('status').innerHTML = `
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z" fill="white"/>
+                        </svg>
+                        <span>Date ended</span>
+                    `;
+                    document.getElementById('status').classList.remove('connected');
+                    
+                    // Clear typing indicator
+                    document.getElementById('typingIndicator').innerHTML = '';
+                }
             });
             
-            // 3. Create the room
-            await database.ref(ROOMS_PATH + '/' + roomId).set({
-                users: {
-                    [currentUser.id]: currentUser.username,
-                    [partnerId]: 'Stranger' // Partner's username is retrieved in listener/UI
-                },
-                createdAt: firebase.database.ServerValue.TIMESTAMP
+            // Listen for partner leaving voluntarily
+            database.ref('users/' + partnerId + '/looking').on('value', (snapshot) => {
+                if (snapshot.val() === true && currentUser.partnerId === partnerId) {
+                    // Partner clicked "Next Date"
+                    document.getElementById('messages').innerHTML += 
+                        '<div class="system-message">👋 Your date partner moved on.</div>';
+                    document.getElementById('messageInput').disabled = true;
+                    document.getElementById('sendBtn').disabled = true;
+                    document.getElementById('partnerInfo').style.display = 'none';
+                    document.getElementById('status').innerHTML = `
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z" fill="white"/>
+                        </svg>
+                        <span>Date ended</span>
+                    `;
+                    document.getElementById('status').classList.remove('connected');
+                    document.getElementById('typingIndicator').innerHTML = '';
+                    
+                    // Clean up our side
+                    if (currentUser.roomId) {
+                        database.ref('rooms/' + currentUser.roomId).off();
+                    }
+                    currentUser.partnerId = null;
+                    currentUser.roomId = null;
+                    messageListenerAttached = false;
+                }
             });
-
-            // UI and Listeners are handled by the `userRef.on('value', ...)` listener in `joinQueue`
         }
-
-        function displayPartnerInfo(username, gender) {
-            document.getElementById('partnerUsername').textContent = username;
-            document.getElementById('partnerGenderIcon').innerHTML = getGenderIconSVG(gender);
-            document.getElementById('partnerInfo').style.display = 'flex';
-        }
-
-        function getGenderIconSVG(gender, size = '18') {
-            let iconPath = '';
-            if (gender === 'male') {
-                iconPath = 'M9 9C10.29 7.71 12.71 7.71 14 9C15.29 10.29 15.29 12.71 14 14C12.71 15.29 10.29 15.29 9 14C7.71 12.71 7.71 10.29 9 9ZM20 2H15V4H17.59L15.5 6.09C14.16 5.25 12.59 4.83 11 5C7.92 5.34 5.34 7.92 5 11C4.58 15.03 7.97 18.42 12 18C15.08 17.66 17.66 15.08 18 12C18.17 10.41 17.75 8.84 16.91 7.5L19 5.41V8H21V2H20Z';
-            } else if (gender === 'female') {
-                iconPath = 'M12 2C15.09 2 17.67 4.42 17.98 7.5C18.41 11.53 15.03 14.92 11 14.5C8.58 14.25 6.59 12.59 6 10.25C5.19 6.95 7.71 4 11 4H13V2H11H12ZM12 6C9.79 6 8 7.79 8 10C8 12.21 9.79 14 12 14C14.21 14 16 12.21 16 10C16 7.79 14.21 6 12 6ZM11 16V19H8V21H11V23H13V21H16V19H13V16H11Z';
-            } else {
-                iconPath = 'M12 2L9.19 8.63L2 9.24L7.46 13.97L5.82 21L12 17.27L18.18 21L16.54 13.97L22 9.24L14.81 8.63L12 2Z';
-            }
-            
-            return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: inline-block; vertical-align: middle;" fill="currentColor">
-                        <path d="${iconPath}" fill="currentColor"/>
-                    </svg>`;
-        }
-        
-        // --- MESSAGE HANDLING ---
 
         function listenToMessages(roomId) {
             if (messageListenerAttached) return;
             
-            const messagesRef = database.ref(ROOMS_PATH + '/' + roomId + '/messages');
+            const messagesRef = database.ref('rooms/' + roomId + '/messages');
             
+            // Clear any existing listeners
             messagesRef.off();
             
+            let isFirstLoad = true;
             const displayedMessages = new Set();
             
             messagesRef.on('child_added', (snapshot) => {
                 const messageKey = snapshot.key;
                 
+                // Prevent duplicate messages
                 if (displayedMessages.has(messageKey)) {
                     return;
                 }
@@ -1195,10 +1489,8 @@
         }
 
         function listenToTyping(roomId) {
-            const typingRef = database.ref(ROOMS_PATH + '/' + roomId + '/typing');
+            const typingRef = database.ref('rooms/' + roomId + '/typing');
             
-            typingRef.off();
-
             typingRef.on('value', (snapshot) => {
                 const typingData = snapshot.val();
                 const typingIndicator = document.getElementById('typingIndicator');
@@ -1213,7 +1505,7 @@
 
         function updateTypingStatus(isTyping) {
             if (currentUser.roomId && currentUser.partnerId) {
-                const typingRef = database.ref(ROOMS_PATH + '/' + currentUser.roomId + '/typing/' + currentUser.id);
+                const typingRef = database.ref('rooms/' + currentUser.roomId + '/typing/' + currentUser.id);
                 if (isTyping) {
                     typingRef.set(true);
                 } else {
@@ -1227,7 +1519,7 @@
             const text = input.value.trim();
             
             if (text && currentUser.partnerId && currentUser.roomId) {
-                const messagesRef = database.ref(ROOMS_PATH + '/' + currentUser.roomId + '/messages');
+                const messagesRef = database.ref('rooms/' + currentUser.roomId + '/messages');
                 
                 const messageData = {
                     senderId: currentUser.id,
@@ -1236,12 +1528,21 @@
                     timestamp: firebase.database.ServerValue.TIMESTAMP
                 };
                 
+                console.log('Sending message:', messageData);
+                
                 messagesRef.push(messageData).then(() => {
+                    console.log('Message sent successfully');
                     input.value = '';
                     updateTypingStatus(false);
                 }).catch((error) => {
                     console.error('Error sending message:', error);
-                    // Use a simple, non-blocking message box if required
+                    alert('Failed to send message. Please try again.');
+                });
+            } else {
+                console.log('Cannot send message:', {
+                    hasText: !!text,
+                    hasPartner: !!currentUser.partnerId,
+                    hasRoom: !!currentUser.roomId
                 });
             }
         }
@@ -1251,7 +1552,9 @@
             const messageDiv = document.createElement('div');
             messageDiv.className = 'message ' + (message.senderId === currentUser.id ? 'own' : 'other');
             
-            const senderName = message.senderId === currentUser.id ? 'You' : currentUser.partnerUsername || 'Stranger';
+            const senderName = message.senderId === currentUser.id ? 'You' : message.username || 'Stranger';
+            
+            console.log('Displaying message from:', senderName, message.text);
             
             messageDiv.innerHTML = `
                 <div class="message-sender">${senderName}</div>
@@ -1267,325 +1570,76 @@
             div.textContent = text;
             return div.innerHTML;
         }
-        
-        // --- CHAT ENDING & HISTORY LOGIC ---
-        
-        async function getPartnerDetails(partnerId) {
-            const partnerSnapshot = await database.ref(USERS_PATH + '/' + partnerId).once('value');
-            if (partnerSnapshot.exists()) {
-                const data = partnerSnapshot.val();
-                return {
-                    username: data.username,
-                    gender: data.gender
-                };
-            }
-            return { username: 'Stranger', gender: 'other' };
-        }
 
-        async function saveChatHistory(roomId, partnerId, partnerUsername, partnerGender) {
-            if (!currentUser.id || !partnerId || !roomId) return;
-            
-            // 1. Get the last message from the room
-            const messagesSnapshot = await database.ref(ROOMS_PATH + '/' + roomId + '/messages')
-                                                   .limitToLast(1)
-                                                   .once('value');
-                                                   
-            let lastMessageText = "No messages exchanged.";
-            let timestamp = Date.now();
-            
-            messagesSnapshot.forEach(childSnapshot => {
-                const msg = childSnapshot.val();
-                lastMessageText = msg.text.length > 50 ? msg.text.substring(0, 50) + '...' : msg.text;
-                timestamp = msg.timestamp || Date.now();
-            });
-
-            // If no messages at all, don't save history
-            if (lastMessageText === "No messages exchanged.") return;
-
-            // Use a unique key for the history item (Firestore uses document ID, RTDB uses push key)
-            const historyKey = database.ref(HISTORIES_PATH).push().key; 
-
-            // History for *Current User*
-            const historyEntry = {
-                roomId: roomId,
-                partnerId: partnerId,
-                partnerUsername: partnerUsername,
-                partnerGender: partnerGender,
-                lastMessageText: lastMessageText,
-                timestamp: timestamp
-            };
-            await database.ref(`${HISTORIES_PATH}/${currentUser.id}/${historyKey}`).set(historyEntry);
-            
-            // History for *Partner* (from their perspective)
-            const partnerEntry = {
-                ...historyEntry,
-                partnerUsername: currentUser.username,
-                partnerId: currentUser.id,
-                partnerGender: currentUser.gender
-            };
-            await database.ref(`${HISTORIES_PATH}/${partnerId}/${historyKey}`).set(partnerEntry);
-        }
-
-        async function disconnectPartner(shouldSaveHistory = true) {
-            if (!currentUser.id) return;
-            
-            const partnerId = currentUser.partnerId;
-            const roomId = currentUser.roomId;
-            
-            // 1. Get partner's details before potential removal
-            let partnerUsername = 'Stranger';
-            let partnerGender = 'other';
-            if (partnerId) {
-                const partnerDetails = await getPartnerDetails(partnerId);
-                partnerUsername = partnerDetails.username;
-                partnerGender = partnerDetails.gender;
-            }
-
-            // 2. Save history
-            if (shouldSaveHistory && partnerId && roomId) {
-                await saveChatHistory(roomId, partnerId, partnerUsername, partnerGender);
-            }
-            
-            // 3. Cleanup listeners and data
-            if (roomId) {
-                database.ref(ROOMS_PATH + '/' + roomId).off();
-                database.ref(ROOMS_PATH + '/' + roomId + '/typing').off();
-            }
-            if (partnerId) {
-                database.ref(USERS_PATH + '/' + partnerId).off();
-            }
-            if (currentUser.id) {
-                database.ref(USERS_PATH + '/' + currentUser.id).off('value');
-            }
-            
-            currentUser.partnerId = null;
-            currentUser.roomId = null;
-            messageListenerAttached = false;
-        }
-        
-        function listenToPartnerDisconnect(partnerId) {
-            // 1. Listen for partner user object deletion (hard disconnect/browser close)
-            database.ref(USERS_PATH + '/' + partnerId).on('value', (snapshot) => {
-                if (!snapshot.exists() && currentUser.partnerId === partnerId) {
-                    handlePartnerLeft('💔 Your date has left the chat.');
-                }
-            });
-            
-            // 2. Listen for partner voluntarily queueing up (soft disconnect/Next Date)
-            database.ref(USERS_PATH + '/' + partnerId + '/looking').on('value', (snapshot) => {
-                if (snapshot.val() === true && currentUser.partnerId === partnerId) {
-                    handlePartnerLeft('👋 Your date partner moved on to the next one.');
-                }
-            });
-        }
-
-        async function handlePartnerLeft(systemMessage) {
-            if (!currentUser.partnerId) return;
-            
-            // Stop all partner-related listeners
-            database.ref(USERS_PATH + '/' + currentUser.partnerId).off();
-            database.ref(ROOMS_PATH + '/' + currentUser.roomId + '/typing').off();
-            
-            // 1. Save history and disconnect fully from the old room
-            await disconnectPartner(true);
-            
-            // 2. Update UI
-            document.getElementById('messages').innerHTML += 
-                `<div class="system-message">${systemMessage}</div>`;
-            document.getElementById('messageInput').disabled = true;
-            document.getElementById('sendBtn').disabled = true;
-            document.getElementById('partnerInfo').style.display = 'none';
-            document.getElementById('status').innerHTML = `
-                <svg width="20" height="20" viewBox="0 0 24 24">
-                    <path d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z" fill="white"/>
-                </svg>
-                <span>Date ended</span>
-            `;
-            document.getElementById('status').classList.remove('connected');
-            document.getElementById('typingIndicator').innerHTML = '';
-        }
-
-        async function nextChat() {
+        function nextChat() {
             if (currentUser.partnerId && currentUser.id) {
-                // 1. Save history & disconnect from current partner/room
-                await disconnectPartner(true);
-                
-                // 2. Notify partner that we are back in queue
-                await database.ref(USERS_PATH + '/' + currentUser.id).update({ 
+                // Notify partner by updating our status to looking
+                database.ref('users/' + currentUser.id).update({ 
                     looking: true,
                     partnerId: null,
                     roomId: null
                 });
                 
-                // 3. Reset UI and join queue
-                resetChatUI();
-                joinQueue();
+                // Small delay to ensure partner sees the change
+                setTimeout(() => {
+                    disconnectPartner();
+                    resetChatUI();
+                    joinQueue();
+                }, 300);
             } else {
-                // Not connected, just reset and queue
                 resetChatUI();
                 joinQueue();
             }
-        }
-
-        async function exitChat() {
-            await disconnectPartner(true);
-            
-            if (currentUser.id) {
-                database.ref(USERS_PATH + '/' + currentUser.id).remove();
-            }
-            
-            document.getElementById('setupScreen').style.display = 'block';
-            document.getElementById('chatScreen').style.display = 'none';
-            document.getElementById('messages').innerHTML = '';
-            isSearching = false;
-            messageListenerAttached = false;
         }
 
         function resetChatUI() {
             document.getElementById('messages').innerHTML = '';
             document.getElementById('typingIndicator').innerHTML = '';
             document.getElementById('partnerInfo').style.display = 'none';
-            document.getElementById('messageInput').disabled = true;
-            document.getElementById('sendBtn').disabled = true;
             document.getElementById('status').innerHTML = `
-                <svg width="20" height="20" viewBox="0 0 24 24">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M15.5 14H14.71L14.43 13.73C15.41 12.59 16 11.11 16 9.5C16 5.91 13.09 3 9.5 3C5.91 3 3 5.91 3 9.5C3 13.09 5.91 16 9.5 16C11.11 16 12.59 15.41 13.73 14.43L14 14.71V15.5L19 20.49L20.49 19L15.5 14ZM9.5 14C7.01 14 5 11.99 5 9.5C5 7.01 7.01 5 9.5 5C11.99 5 14 7.01 14 9.5C14 11.99 11.99 14 9.5 14Z" fill="white"/>
                 </svg>
                 <span>Looking for a date...</span>
             `;
             document.getElementById('status').classList.remove('connected');
+            document.getElementById('messageInput').disabled = true;
+            document.getElementById('sendBtn').disabled = true;
             currentUser.partnerId = null;
             currentUser.roomId = null;
+            messageListenerAttached = false;
             isSearching = false;
         }
 
-        // --- HISTORY VIEW FUNCTIONS ---
-
-        function viewHistory() {
-            document.getElementById('setupScreen').style.display = 'none';
-            document.getElementById('chatScreen').style.display = 'none';
-            document.getElementById('historyScreen').style.display = 'block';
-            document.getElementById('historyUsername').textContent = currentUser.username;
-            
-            loadChatHistory();
-        }
-
-        function showSetupFromHistory() {
-            document.getElementById('setupScreen').style.display = 'block';
-            document.getElementById('historyScreen').style.display = 'none';
-            
-            // Reset history view to list
-            document.getElementById('historyList').style.display = 'block';
-            document.getElementById('historyDetails').style.display = 'none';
-            document.getElementById('historyMessages').innerHTML = '';
-        }
-
-        function displayHistoryItem(data) {
-            const list = document.getElementById('historyList');
-            const itemDiv = document.createElement('div');
-            itemDiv.className = 'message other';
-            itemDiv.style.cursor = 'pointer';
-            itemDiv.onclick = () => viewPastChat(data.roomId, data.partnerUsername, data.partnerGender);
-            
-            const date = new Date(data.timestamp);
-            const dateString = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            
-            const partnerIcon = getGenderIconSVG(data.partnerGender, '20');
-            
-            itemDiv.innerHTML = `
-                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
-                    <span style="display: flex; align-items: center; gap: 8px; font-weight: 600;">Date with: ${data.partnerUsername} ${partnerIcon}</span>
-                    <span style="font-style: italic; font-weight: normal; opacity: 0.8; font-size: 11px;">${dateString}</span>
-                </div>
-                <div class="message-text" style="font-size: 14px; opacity: 0.9; color: var(--color-text-secondary);">
-                    Last message: ${data.lastMessageText}
-                </div>
-            `;
-            list.prepend(itemDiv); // Show newest first
-        }
-
-        function loadChatHistory() {
-            const list = document.getElementById('historyList');
-            list.innerHTML = '<div class="system-message">Fetching history...</div>';
-
-            if (!currentUser.id) {
-                list.innerHTML = '<div class="system-message">You must be logged in to view history.</div>';
-                return;
+        function disconnectPartner() {
+            if (currentUser.roomId) {
+                database.ref('rooms/' + currentUser.roomId).remove();
             }
-
-            database.ref(`${HISTORIES_PATH}/${currentUser.id}`)
-                .orderByChild('timestamp')
-                .once('value', (snapshot) => {
-                    list.innerHTML = '';
-                    
-                    if (!snapshot.exists() || snapshot.numChildren() === 0) {
-                        list.innerHTML = '<div class="system-message">You have no recorded chat history yet. Start a date!</div>';
-                        return;
-                    }
-                    
-                    const histories = [];
-                    snapshot.forEach(child => {
-                        histories.push(child.val());
-                    });
-                    
-                    histories.sort((a, b) => b.timestamp - a.timestamp); // Sort by newest first
-                    
-                    histories.forEach(item => displayHistoryItem(item));
-                }, (error) => {
-                    console.error("Error loading history:", error);
-                    list.innerHTML = '<div class="system-message">Error loading history.</div>';
-                });
+            if (currentUser.partnerId) {
+                database.ref('users/' + currentUser.partnerId).off();
+            }
+            if (currentUser.id) {
+                database.ref('users/' + currentUser.id).off('value');
+            }
+            currentUser.partnerId = null;
+            currentUser.roomId = null;
+            messageListenerAttached = false;
         }
 
-        function viewPastChat(roomId, partnerUsername, partnerGender) {
-            document.getElementById('historyList').style.display = 'none';
-            document.getElementById('historyDetails').style.display = 'block';
-            document.getElementById('historyPartnerUsername').textContent = partnerUsername;
-            document.getElementById('historyPartnerGenderIcon').innerHTML = getGenderIconSVG(partnerGender);
-            
-            const messagesDiv = document.getElementById('historyMessages');
-            messagesDiv.innerHTML = '<div class="system-message">Loading conversation...</div>';
-
-            // Fetch all messages for the past room (read-only)
-            database.ref(ROOMS_PATH + '/' + roomId + '/messages')
-                .once('value', (snapshot) => {
-                    messagesDiv.innerHTML = ''; // Clear loading message
-                    
-                    if (!snapshot.exists()) {
-                        messagesDiv.innerHTML = '<div class="system-message">This conversation history is empty or was deleted.</div>';
-                        return;
-                    }
-                    
-                    snapshot.forEach((child) => {
-                        const message = child.val();
-                        if (message && message.text) {
-                            displayHistoryMessage(message, messagesDiv, partnerUsername);
-                        }
-                    });
-                    messagesDiv.scrollTop = messagesDiv.scrollHeight;
-                });
+        function exitChat() {
+            disconnectPartner();
+            if (currentUser.id) {
+                database.ref('users/' + currentUser.id).remove();
+            }
+            document.getElementById('setupScreen').style.display = 'block';
+            document.getElementById('chatScreen').style.display = 'none';
+            document.getElementById('messages').innerHTML = '';
+            isSearching = false;
+            messageListenerAttached = false;
         }
-
-        function displayHistoryMessage(message, messagesDiv, partnerUsername) {
-            const messageDiv = document.createElement('div');
-            // Determine if it was "own" or "other" based on senderId
-            const isOwn = message.senderId === currentUser.id;
-            messageDiv.className = 'message ' + (isOwn ? 'own' : 'other');
-            
-            const senderName = isOwn ? 'You' : partnerUsername;
-            
-            messageDiv.innerHTML = `
-                <div class="message-sender">${senderName}</div>
-                <div class="message-text">${escapeHtml(message.text)}</div>
-            `;
-            
-            messagesDiv.appendChild(messageDiv);
-        }
-
-        // --- GLOBAL SETUP & LISTENERS ---
 
         // Update online count
-        database.ref(USERS_PATH).on('value', (snapshot) => {
+        database.ref('users').on('value', (snapshot) => {
             document.getElementById('onlineCount').textContent = snapshot.numChildren();
         });
 
@@ -1606,6 +1660,8 @@
             }, 1000);
         });
 
+        // Generate initial username
+        generateUsername();
     </script>
 </body>
 </html>
